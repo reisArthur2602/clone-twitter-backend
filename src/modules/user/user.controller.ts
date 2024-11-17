@@ -1,10 +1,11 @@
-import { Request, RequestHandler, Response } from "express";
+import { Request, Response } from "express";
 
 import UserServices from "./user.services";
 import slug from "slug";
 import { compare, hash } from "bcrypt-ts";
-import { createJWT } from "../../utils/jwt";
+
 import { createUserSchema, loginUserSchema } from "./user.schema";
+import { JWTServices } from "../../utils/jwt";
 
 class UserController {
   static async create(request: Request, response: Response) {
@@ -37,7 +38,7 @@ class UserController {
       password: hashPassword,
     });
 
-    const token = createJWT(userSlug);
+    const token = JWTServices.create(userSlug);
 
     response.status(201).json({
       token,
@@ -62,7 +63,7 @@ class UserController {
     const isMatch = await compare(data.password, hasUserWithEmail.password);
     if (!isMatch) return response.status(401).json({ error: "Acesso Negado" });
 
-    const token = createJWT(hasUserWithEmail.slug);
+    const token = JWTServices.create(hasUserWithEmail.slug);
 
     response.status(201).json({
       token,
