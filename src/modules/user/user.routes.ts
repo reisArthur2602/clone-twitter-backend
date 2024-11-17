@@ -1,6 +1,12 @@
 import { Router } from "express";
-import userController from "./user.controller";
+import UserController from "./user.controller";
 
 export const userRoutes = Router();
 
-userRoutes.post("auth/login",userController.auth);
+userRoutes.post("/auth/register", (request, response) => {
+  UserController.create(request, response);
+});
+
+userRoutes.post("/auth/login", (request, response) => {
+  UserController.login(request, response);
+});
